@@ -5,7 +5,7 @@
 #include <vector>
 #include <sstream>
 
-//строка -> любой тип
+//СЃС‚СЂРѕРєР° -> Р»СЋР±РѕР№ С‚РёРї
 template <typename T>
 T setArgument(std::string inputValue)
 {
@@ -18,7 +18,7 @@ T setArgument(std::string inputValue)
 }
 
 
-//вывод I - кол-во аргументов
+//РІС‹РІРѕРґ I - РєРѕР»-РІРѕ Р°СЂРіСѓРјРµРЅС‚РѕРІ
 template <typename Ch, typename Tr, size_t I, typename... Args>
 class TuplePrinter
 {
@@ -32,7 +32,7 @@ public:
 	}
 };
 
-//и закончили. для нулевого аргумента
+//Рё Р·Р°РєРѕРЅС‡РёР»Рё. РґР»СЏ РЅСѓР»РµРІРѕРіРѕ Р°СЂРіСѓРјРµРЅС‚Р°
 template <typename Ch, typename Tr, typename... Args>
 class TuplePrinter<Ch, Tr, 0, Args...>
 {
@@ -44,7 +44,7 @@ public:
 	}
 };
 
-// оператор << будет запускать TurplePrinter
+// РѕРїРµСЂР°С‚РѕСЂ << Р±СѓРґРµС‚ Р·Р°РїСѓСЃРєР°С‚СЊ TurplePrinter
 template <typename Ch, typename Tr, typename... Args>
 auto operator<<(std::basic_ostream<Ch, Tr>& os, const std::tuple<Args...>& t)
 {
@@ -55,23 +55,23 @@ template<typename... Args>
 class CSVParser
 {
 public:
-	CSVParser(std::ifstream& file, size_t skipLines, char delimeter = ',', char safe = '\"') : file_name(file) //this->file = file для потоков не работает
+	CSVParser(std::ifstream& file, size_t skipLines, char delimeter = ',', char safe = '\"') : file_name(file) //this->file = file РґР»СЏ РїРѕС‚РѕРєРѕРІ РЅРµ СЂР°Р±РѕС‚Р°РµС‚
 	{
-		this->delimiter = delimeter;		//разделитель
-		this->saveSymbol = safe;			//символ экранирования
-		this->read_rows = 0;				//сколько уже считали
-		this->skip_lines = skipLines;		//пропуск строк
+		this->delimiter = delimeter;		//СЂР°Р·РґРµР»РёС‚РµР»СЊ
+		this->saveSymbol = safe;			//СЃРёРјРІРѕР» СЌРєСЂР°РЅРёСЂРѕРІР°РЅРёСЏ
+		this->read_rows = 0;				//СЃРєРѕР»СЊРєРѕ СѓР¶Рµ СЃС‡РёС‚Р°Р»Рё
+		this->skip_lines = skipLines;		//РїСЂРѕРїСѓСЃРє СЃС‚СЂРѕРє
 
-		if (!file.is_open()) throw std::runtime_error("File is not opened!"); //не существующий файл
+		if (!file.is_open()) throw std::runtime_error("File is not opened!"); //РЅРµ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ С„Р°Р№Р»
 
-		std::string __trash;				//пропуск строк
+		std::string __trash;				//РїСЂРѕРїСѓСЃРє СЃС‚СЂРѕРє
 		while (this->read_rows < this->skip_lines)
 		{
 			std::getline(file, __trash);
 			this->read_rows++;
 		}
 
-		//поеъхали
+		//РїРѕРµСЉС…Р°Р»Рё
 		this->buffer = this->getString();
 	}
 
@@ -86,7 +86,7 @@ public:
 
 		if (this->file_name.eof()) return std::tuple<Args...>();
 
-		//Возващаем последнене значение из вектора (лямбда функция в си))))
+		//Р’РѕР·РІР°С‰Р°РµРј РїРѕСЃР»РµРґРЅРµРЅРµ Р·РЅР°С‡РµРЅРёРµ РёР· РІРµРєС‚РѕСЂР° (Р»СЏРјР±РґР° С„СѓРЅРєС†РёСЏ РІ СЃРё))))
 		auto flip = [&output]() -> std::string
 		{
 			std::string s = output.back();
@@ -94,13 +94,13 @@ public:
 			return s;
 		};
 
-		if (output.size() != sizeof...(Args))	throw std::runtime_error("Invalid string");					//в строке больше или меьше столбцов
-		if (isSafe == true)						throw std::runtime_error("The save data wasn't closed!");	//если не нашли закрывающего знака экранизации
+		if (output.size() != sizeof...(Args))	throw std::runtime_error("Invalid string");					//РІ СЃС‚СЂРѕРєРµ Р±РѕР»СЊС€Рµ РёР»Рё РјРµСЊС€Рµ СЃС‚РѕР»Р±С†РѕРІ
+		if (isSafe == true)						throw std::runtime_error("The save data wasn't closed!");	//РµСЃР»Рё РЅРµ РЅР°С€Р»Рё Р·Р°РєСЂС‹РІР°СЋС‰РµРіРѕ Р·РЅР°РєР° СЌРєСЂР°РЅРёР·Р°С†РёРё
 
 		return std::tuple<Args...>(setArgument<Args>(flip())...);
 	}
 
-	//класс iterator для того чтобы писать как в питоне например. auto x : p (x in p)
+	//РєР»Р°СЃСЃ iterator РґР»СЏ С‚РѕРіРѕ С‡С‚РѕР±С‹ РїРёСЃР°С‚СЊ РєР°Рє РІ РїРёС‚РѕРЅРµ РЅР°РїСЂРёРјРµСЂ. auto x : p (x in p)
 	class CSVInputIterator
 	{
 	public:
@@ -110,17 +110,17 @@ public:
 		using pointer = value_type*;
 		using reference = value_type&;
 
-		CSVInputIterator(CSVParser<Args...>* _object = nullptr) : object(_object) {};		//конец файла
+		CSVInputIterator(CSVParser<Args...>* _object = nullptr) : object(_object) {};		//РєРѕРЅРµС† С„Р°Р№Р»Р°
 		CSVInputIterator(const CSVInputIterator&) = default;
 		CSVInputIterator& operator=(const CSVInputIterator&) = default;
-		//меняет местами a и b 
+		//РјРµРЅСЏРµС‚ РјРµСЃС‚Р°РјРё a Рё b 
 		friend void swap(CSVInputIterator& a, CSVInputIterator& b) { std::swap(a.object, b.object); }
-		//сравнение
+		//СЃСЂР°РІРЅРµРЅРёРµ
 		friend bool operator==(CSVInputIterator& a, CSVInputIterator& b) { return a.object == b.object; }
 		friend bool operator!=(CSVInputIterator& a, CSVInputIterator& b) { return a.object != b.object; }
-		//проверка на конец файла
+		//РїСЂРѕРІРµСЂРєР° РЅР° РєРѕРЅРµС† С„Р°Р№Р»Р°
 		value_type operator*() { if (!object->isEof) return object->buffer; }
-		//следующее значение
+		//СЃР»РµРґСѓСЋС‰РµРµ Р·РЅР°С‡РµРЅРёРµ
 		CSVInputIterator& operator++()
 		{
 			object->buffer = object->getString();
@@ -145,14 +145,14 @@ private:
 
 	char delimiter;
 	char saveSymbol;
-	bool isSafe = false;	//флаг экранизации
-	bool isEof = false;		//флаг конца файла
+	bool isSafe = false;	//С„Р»Р°Рі СЌРєСЂР°РЅРёР·Р°С†РёРё
+	bool isEof = false;		//С„Р»Р°Рі РєРѕРЅС†Р° С„Р°Р№Р»Р°
 
 	std::vector<std::string> getData()
 	{
 		std::string	read_string;
 		std::vector<std::string> splitted_string;
-		std::vector <std::string> __data;			//поделенная строка с учётом экранизации. (то что мы будем возвращать)
+		std::vector <std::string> __data;			//РїРѕРґРµР»РµРЅРЅР°СЏ СЃС‚СЂРѕРєР° СЃ СѓС‡С‘С‚РѕРј СЌРєСЂР°РЅРёР·Р°С†РёРё. (С‚Рѕ С‡С‚Рѕ РјС‹ Р±СѓРґРµРј РІРѕР·РІСЂР°С‰Р°С‚СЊ)
 
 		std::getline(this->file_name, read_string);
 
@@ -171,7 +171,7 @@ private:
 			splitted_string.push_back(read_string.substr(start, end - start));
 		}
 
-		//экранизация
+		//СЌРєСЂР°РЅРёР·Р°С†РёСЏ
 		std::string value;
 		for (auto x : splitted_string)
 		{
